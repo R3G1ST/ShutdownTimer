@@ -128,13 +128,15 @@ class _EngineWorker(QObject):
         self._thresholds = {
             _as_int(item, 0) for item in data.get("warns", []) if _as_int(item, 0) > 0
         }
-        self._fired = set()
         self._target = float(data.get("target_mono", time.monotonic()))
         self._limit = _as_int(data.get("idle_limit"), 0)
         self._paused = False
         self._paused_remaining = 0
         self._running = True
         remaining = self._compute_remaining()
+        # Пороги, уже просроченные на старте (остаток <= порога), не стреляем:
+        # иначе таймер на 60 с выдал бы сразу 3 тоста «осталось 10/5/1 мин»
+        self._fired = {item for item in self._thresholds if remaining <= item}
         timer = self._ensure_timer()
         timer.stop()
         self.tick.emit(remaining)

@@ -1,4 +1,4 @@
-﻿#define MyAppVersion "1.0.0"
+﻿#define MyAppVersion "1.0.1"
 #define MyAppName "ShutdownTimer"
 #define MyAppPublisher "R3G1ST"
 #define MyAppExeName "ShutdownTimer.exe"

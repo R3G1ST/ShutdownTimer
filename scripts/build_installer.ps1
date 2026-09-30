@@ -33,7 +33,13 @@ if ($LASTEXITCODE -ne 0) {
     throw "ISCC failed with exit code $LASTEXITCODE"
 }
 
-$setup = Join-Path $Root 'installer\Output\ShutdownTimer-Setup-1.0.0.exe'
+$versionMatch = Select-String -Path 'installer\setup.iss' -Pattern '^#define MyAppVersion "([^"]+)"'
+if (-not $versionMatch) {
+    throw 'MyAppVersion not found in installer\setup.iss'
+}
+$version = $versionMatch.Matches[0].Groups[1].Value
+
+$setup = Join-Path $Root "installer\Output\ShutdownTimer-Setup-$version.exe"
 if (-not (Test-Path -LiteralPath $setup)) {
     throw "Installer output not found: $setup"
 }

@@ -1,7 +1,7 @@
 # Сборка ShutdownTimer
 
 Приложение: **ShutdownTimer** — «Таймер автоотключения ПК».
-Версия: **1.0.0**. Точка входа: `main.py` (корень репозитория). Иконка: `resources/icon.ico`.
+Версия: **1.0.1**. Точка входа: `main.py` (корень репозитория). Иконка: `resources/icon.ico`.
 
 ## Требования
 
@@ -84,7 +84,7 @@ ShutdownTimer/
 ├── installer/
 │   ├── setup.iss                # скрипт Inno Setup 6
 │   └── Output/
-│       └── ShutdownTimer-Setup-1.0.0.exe   # инсталлятор
+│       └── ShutdownTimer-Setup-1.0.1.exe   # инсталлятор
 ├── scripts/
 │   ├── build_exe.ps1            # сборка EXE
 │   └── build_installer.ps1      # сборка EXE + инсталлятора
@@ -94,7 +94,7 @@ ShutdownTimer/
 | Артефакт | Путь | Описание |
 |----------|------|----------|
 | Portable EXE | `dist\ShutdownTimer.exe` | One-file, без установки, без консоли |
-| Инсталлятор | `installer\Output\ShutdownTimer-Setup-1.0.0.exe` | Inno Setup, LZMA2/ultra, установка в профиль пользователя (без прав администратора) |
+| Инсталлятор | `installer\Output\ShutdownTimer-Setup-1.0.1.exe` | Inno Setup, LZMA2/ultra, установка в профиль пользователя (без прав администратора) |
 
 Приложение работает и portable (просто запустите `dist\ShutdownTimer.exe`). Реестр-протокол `shutdowntimer://` приложение регистрирует само; инсталлятор дополнительно регистрирует протокол в HKCU и снимает его при деинсталляции.
 
@@ -111,7 +111,7 @@ Workflow: `.github/workflows/release.yml` (`Build and Release`).
 
 Триггеры:
 
-- push тега вида `v*` (например `v1.0.0`);
+- push тега вида `v*` (например `v1.0.1`);
 - ручной запуск (`workflow_dispatch`) — собирает артефакты без публикации.
 
 Что делает (runner `windows-latest`, shell `pwsh`):
@@ -126,15 +126,15 @@ Workflow: `.github/workflows/release.yml` (`Build and Release`).
 
 ### Как выпустить релиз
 
-1. Убедитесь, что версия **1.0.0** указана в `build.spec` (имя EXE), `installer/setup.iss` (`MyAppVersion`) и `package.json`/`__init__.py` проекта (если есть).
+1. Убедитесь, что версия **1.0.1** указана в `build.spec` (имя EXE), `installer/setup.iss` (`MyAppVersion`) и `package.json`/`__init__.py` проекта (если есть).
 2. Создайте и запушьте тег:
 
 ```powershell
-git tag v1.0.0
-git push origin v1.0.0
+git tag v1.0.1
+git push origin v1.0.1
 ```
 
-3. Actions выполнит сборку и создаст GitHub Release с двумя артефактами: `ShutdownTimer.exe` и `ShutdownTimer-Setup-1.0.0.exe`.
+3. Actions выполнит сборку и создаст GitHub Release с двумя артефактами: `ShutdownTimer.exe` и `ShutdownTimer-Setup-1.0.1.exe`.
 
 ## Режим безопасной отладки (dry run)
 

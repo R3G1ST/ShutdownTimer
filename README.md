@@ -26,7 +26,7 @@
 ## Установка
 
 1. Откройте страницу релизов: **[github.com/R3G1ST/ShutdownTimer/releases/latest](https://github.com/R3G1ST/ShutdownTimer/releases/latest)** и скачайте файл `Setup.exe`.
-2. Или напрямую: **[ShutdownTimer-Setup-1.0.0.exe](https://github.com/R3G1ST/ShutdownTimer/releases/download/v1.0.0/ShutdownTimer-Setup-1.0.0.exe)**.
+2. Или напрямую: **[ShutdownTimer-Setup-1.0.1.exe](https://github.com/R3G1ST/ShutdownTimer/releases/download/v1.0.1/ShutdownTimer-Setup-1.0.1.exe)**.
 3. Запустите инсталлятор и следуйте подсказкам.
 
 Опции инсталлятора:

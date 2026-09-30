@@ -173,3 +173,20 @@ def test_progress_ring_set_progress_does_not_crash(qtbot) -> None:
     qtbot.wait(80)
     assert ring.isVisible()
     ring.hide()
+
+
+def test_progress_ring_gradient_paint_renders_without_exception(qtbot) -> None:
+    """Регрессия краша 0xC0000409: QPen(QBrush) без ширины -> TypeError в paintEvent."""
+    from PyQt6.QtGui import QImage
+
+    ring = ProgressRing()
+    qtbot.addWidget(ring)
+    ring.set_seconds(45)
+    ring.set_progress(0.75)
+    ring.set_danger(False)
+    ring.set_status("Осталось 00:45")
+
+    image = QImage(300, 300, QImage.Format.Format_ARGB32)
+    image.fill(0)
+    ring.render(image)  # принудительный paintEvent с градиентной веткой
+    assert not image.isNull()

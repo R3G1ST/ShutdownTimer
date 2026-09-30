@@ -342,7 +342,7 @@ class ProgressRing(QFrame):
                 gradient = QConicalGradient(center, -90.0)
                 gradient.setColorAt(0.0, QColor(ACCENT))
                 gradient.setColorAt(1.0, QColor(ACCENT_2))
-                arc_pen = QPen(QBrush(gradient))
+                arc_pen = QPen(QBrush(gradient), ring_width)
             arc_pen.setWidthF(ring_width)
             arc_pen.setCapStyle(Qt.PenCapStyle.RoundCap)
             painter.setPen(arc_pen)

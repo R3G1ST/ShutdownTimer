@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import threading
+import time
 from itertools import pairwise
 
 from app.config import SettingsManager
@@ -98,11 +99,12 @@ def test_short_countdown_completes_and_stops(
     assert engine.remaining == 0
 
 
-def test_warning_emits_once_per_threshold(
+def test_warning_skipped_when_threshold_already_past_at_start(
     qtbot, settings: SettingsManager, engine: TimerEngine
 ) -> None:
+    # Остаток 2 с, порог «за 1 минуту» (60 с) просрочен при старте — не стреляем
     settings.set("countdown_minutes", 2 / 60)
-    settings.set("notify_lead_minutes", [1])  # порог 60 с
+    settings.set("notify_lead_minutes", [1])
     warnings: list[int] = []
     engine.warning.connect(warnings.append)
 
@@ -110,32 +112,53 @@ def test_warning_emits_once_per_threshold(
         engine.start()
 
     qtbot.wait(400)
-    assert len(warnings) == 1, warnings
+    assert warnings == [], warnings
+
+
+def test_warning_fires_when_threshold_crossed(
+    qtbot, settings: SettingsManager, engine: TimerEngine
+) -> None:
+    worker = engine._worker
+    assert worker is not None
+    warnings: list[int] = []
+    worker.warning.connect(warnings.append)
+
+    # старт с остатком 65 с — порог 60 с ещё не просрочен
+    worker.handle_start(
+        {"mode": "countdown", "warns": [60], "target_mono": time.monotonic() + 65}
+    )
+    # подкручиваем цель: остаток 59 с — первый тик пересечёт порог
+    worker._target = time.monotonic() + 59
+    qtbot.waitUntil(lambda: bool(warnings), timeout=3000)
     assert warnings[0] <= 60
+    assert 60 in worker._fired, "сработавший порог должен быть в _fired"
+
+    worker.handle_stop()
 
 
 def test_extend_rearms_warning_threshold(
     qtbot, settings: SettingsManager, engine: TimerEngine
 ) -> None:
-    settings.set("countdown_minutes", 2 / 60)
-    settings.set("notify_lead_minutes", [1])
-    warnings: list[int] = []
-    engine.warning.connect(warnings.append)
-
-    engine.start()
-    qtbot.waitUntil(lambda: bool(warnings), timeout=4000)
-
     worker = engine._worker
     assert worker is not None
+    warnings: list[int] = []
+    worker.warning.connect(warnings.append)
+
+    worker.handle_start(
+        {"mode": "countdown", "warns": [60], "target_mono": time.monotonic() + 65}
+    )
+    worker._target = time.monotonic() + 59
+    qtbot.waitUntil(lambda: bool(warnings), timeout=3000)
+
     qtbot.wait(100)
     assert 60 in worker._fired, "сработавший порог должен быть в _fired"
 
-    engine.extend(300)
+    worker.handle_extend(300)
     qtbot.wait(200)
     assert 60 not in worker._fired, "после продления порог должен перевзвестись"
     assert len(warnings) == 1, warnings
 
-    engine.stop()
+    worker.handle_stop()
 
 
 def test_repeated_start_stop_does_not_leak_threads(
