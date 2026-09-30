@@ -1,0 +1,5 @@
+pyinstaller>=6.0
+ruff>=0.5
+pytest>=8.0
+pytest-qt>=4.4
+pillow>=10.0

@@ -1,0 +1,16 @@
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+build/
+dist/
+*.spec.bak
+.ruff_cache/
+.pytest_cache/
+.idea/
+.vscode/
+*.egg-info/
+installer/Output/
+Thumbs.db
+*.log
+.env
